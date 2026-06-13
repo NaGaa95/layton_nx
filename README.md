@@ -1,6 +1,6 @@
 <div align=center>
 
-<img src="extras/banner.png" alt="Banner" width="35%">
+<img src="extras/banner.png" alt="Banner" width="40%">
 
 </div>
 <h1 align=center>Professor Layton: Curious Village HD — Nintendo Switch port</h1>
@@ -10,8 +10,8 @@ A wrapper/port of the Android release of **Professor Layton: Curious Village HD*
 resolves its imports against native Switch implementations and patches it so it
 runs as if inside a minimal Android environment.
 
-> No game assets or original program code are included. You must own the game
-> and supply the files yourself.
+No game assets or original program code are included. You must own the game
+and supply the files yourself.
 
 ## How to install
 
@@ -54,7 +54,7 @@ Saves are written to `data/` next to the `.nro`.
   keeps the original rotate behaviour.
 
 
-## Build (developers)
+## Build
 
 devkitA64 plus these portlibs:
 
