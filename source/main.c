@@ -577,7 +577,10 @@ int main(int argc, char *argv[]) {
       glBindFramebuffer(GL_FRAMEBUFFER, rot.fbo);
     glViewport(0, 0, view_w, view_h);
 
-    game_render(fake_env, NULL, (int)(delta_us / 16667), 0, touch_num, x1, y1, x2, y2);
+    int frame_step = (int)((delta_us + 8333) / 16667);
+    if (frame_step < 1) frame_step = 1;
+    if (frame_step > 6) frame_step = 6;
+    game_render(fake_env, NULL, frame_step, 0, touch_num, x1, y1, x2, y2);
 
     if (config.portrait)
       rot_blit();
