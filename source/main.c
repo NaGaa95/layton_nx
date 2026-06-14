@@ -385,11 +385,14 @@ static void rot_init(void) {
 }
 
 // draw the portrait FBO rotated onto the screen (strip order: BL BR TL TR);
-// the rotation matches the handedness the game's own movie-rotate button
-// assumes (Android landscape)
+// portrait==1 matches the handedness the game's own movie-rotate button assumes
+// (Android landscape); portrait==2 is the same view rotated 180 degrees, for
+// holding the console the other way up
 static void rot_blit(void) {
-  static const GLfloat pos[8] = { -1,-1,  1,-1,  -1,1,  1,1 };
-  static const GLfloat uv[8]  = { 0,1,  0,0,  1,1,  1,0 };
+  static const GLfloat pos[8]  = { -1,-1,  1,-1,  -1,1,  1,1 };
+  static const GLfloat uv_1[8] = { 0,1,  0,0,  1,1,  1,0 }; // portrait 1
+  static const GLfloat uv_2[8] = { 1,0,  1,1,  0,0,  0,1 }; // portrait 2 (180)
+  const GLfloat *uv = (config.portrait == 2) ? uv_2 : uv_1;
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDisable(GL_DEPTH_TEST);
@@ -423,9 +426,13 @@ static PadState pad;
 // map a physical touch-panel point (1280x720) into game-view coordinates
 // (the portrait mapping matches rot_blit's rotation)
 static void panel_to_view(float px, float py, float *gx, float *gy) {
-  if (config.portrait) {
+  if (config.portrait == 1) {
     *gx = (720.0f - py) * ((float)view_w / 720.0f);
     *gy = px * ((float)view_h / 1280.0f);
+  } else if (config.portrait == 2) {
+    // 180 degrees from portrait 1
+    *gx = py * ((float)view_w / 720.0f);
+    *gy = (1280.0f - px) * ((float)view_h / 1280.0f);
   } else {
     *gx = px * ((float)view_w / 1280.0f);
     *gy = py * ((float)view_h / 720.0f);
@@ -458,9 +465,12 @@ static void collect_input(int *touch_num, float *x1, float *y1, float *x2, float
 
   // rotate the stick into view space so "up" follows the held console
   float dx, dy;
-  if (config.portrait) {
+  if (config.portrait == 1) {
     dx = ny;
     dy = nx;
+  } else if (config.portrait == 2) {
+    dx = -ny;
+    dy = -nx;
   } else {
     dx = nx;
     dy = -ny;
@@ -486,8 +496,8 @@ int main(int argc, char *argv[]) {
 
   if (read_config(CONFIG_NAME) < 0)
     write_config(CONFIG_NAME);
-  if (config.portrait)
-    config.portrait = 1; // single rotation direction
+  if (config.portrait < 0 || config.portrait > 2)
+    config.portrait = 1; // 0 = landscape; 1 / 2 = portrait (two directions)
 
   check_syscalls();
   check_data();

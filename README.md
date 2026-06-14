@@ -45,7 +45,8 @@ Saves are written to `data/` next to the `.nro`.
 * `screen_width` / `screen_height` — render resolution; `-1` picks
   1280×720 in handheld and 1920×1080 docked.
 * `portrait` — `1` (default) renders the game in portrait, to be played with
-  the console held rotated; `0` is landscape.
+  the console held rotated; `2` is the same portrait view rotated the other way
+  (180°), for holding the console the opposite way up; `0` is landscape.
 
 
 ## Known limitations

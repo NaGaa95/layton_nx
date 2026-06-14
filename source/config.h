@@ -31,8 +31,9 @@ extern int screen_height;
 typedef struct {
   int screen_width;
   int screen_height;
-  // 0 = landscape (default); 1 = portrait: hold the console rotated and the
-  // stacked DS layout fills the screen
+  // 0 = landscape; 1 = portrait (default): hold the console rotated and the
+  // stacked DS layout fills the screen; 2 = portrait rotated the other way
+  // (180 degrees), for holding the console the opposite way up
   int portrait;
 } Config;
 
