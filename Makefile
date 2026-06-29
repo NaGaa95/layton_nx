@@ -14,7 +14,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 TARGET		:=	layton_nx
 APP_TITLE	:=	Professor Layton CV HD
 APP_AUTHOR	:=	naga
-APP_VERSION	:=	1.0.3
+APP_VERSION	:=	1.0.4
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
