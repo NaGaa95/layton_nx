@@ -10,6 +10,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+#include "saltynx.h"
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -590,6 +591,8 @@ static void cursor_draw(void) {
 }
 
 int main(int argc, char *argv[]) {
+  saltynx_start();
+  atexit(saltynx_stop);
   (void)argc; (void)argv;
 
   cpu_boost(1);
