@@ -10,6 +10,9 @@ A wrapper/port of the Android release of **Professor Layton: Curious Village HD*
 resolves its imports against native Switch implementations and patches it so it
 runs as if inside a minimal Android environment.
 
+The international and Japanese APK layouts are detected automatically. Use
+`libll1.so` and the assets from the same APK.
+
 No game assets or original program code are included. You must own the game
 and supply the files yourself.
 

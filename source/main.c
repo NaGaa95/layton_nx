@@ -267,6 +267,23 @@ static void GL_DrawMovie_hook(unsigned int target, unsigned int tex,
 // addresses are routed through semaphores by the pthread shims (imports.c).
 #define TURNSTILE_A_OFF 0x356b38
 #define TURNSTILE_B_OFF 0x356b60
+#define JP_MOVIE_TEX_OFF 0x356bbc
+#define JP_TURNSTILE_A_OFF 0x356af8
+#define JP_TURNSTILE_B_OFF 0x356b20
+
+static void register_game_turnstiles(void) {
+  const uintptr_t base = (uintptr_t)game_mod.load_virtbase;
+  const uintptr_t movie_tex = so_try_find_addr_rx(&game_mod, "movieTex");
+  // The tested Japanese APK has a different BSS layout. Its exported movieTex
+  // identifies that layout; keep the international defaults for other binaries.
+  const int japanese = movie_tex && movie_tex - base == JP_MOVIE_TEX_OFF;
+  const uintptr_t a = japanese ? JP_TURNSTILE_A_OFF : TURNSTILE_A_OFF;
+  const uintptr_t b = japanese ? JP_TURNSTILE_B_OFF : TURNSTILE_B_OFF;
+  register_turnstile_mutexes((void *)(base + a), (void *)(base + b));
+  debugPrintf("patch: %s binary, turnstiles %08lx/%08lx\n",
+              japanese ? "Japanese" : "international", (unsigned long)a,
+              (unsigned long)b);
+}
 
 // patch an exported engine function; must run before so_finalize (the
 // trampoline is written into the still-writable staging copy)
@@ -289,9 +306,7 @@ static void patch_game(void) {
   if (!config.portrait)
     hook("_Z12GL_DrawMoviejjffffPf", GL_DrawMovie_hook);
   // make the render<->logic vsync turnstile work across threads (see above)
-  register_turnstile_mutexes(
-      (void *)((uintptr_t)game_mod.load_virtbase + TURNSTILE_A_OFF),
-      (void *)((uintptr_t)game_mod.load_virtbase + TURNSTILE_B_OFF));
+  register_game_turnstiles();
 }
 
 // ---------------------------------------------------------------------------
